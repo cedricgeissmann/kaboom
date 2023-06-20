@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Doodle Jump</title>
-    
+    <style>
     body {
       display: flex;
       height: 100vh;
@@ -22,3 +22,26 @@
       position: relative;
       overflow: hidden;
     }
+    .game.gameover {
+        filter: blur(5px);
+      }
+      .platform {
+        width: 114px;
+        height: 29px;
+        background: url(doodle-platform.png);
+        position: absolute;
+        left: 10px;
+        top: 10px;
+      }
+      .doodle {
+        width: 100px;
+        height: 100px;
+        background: url(doodle.png) no-repeat;
+        background-size: 100px 100px;
+        position: absolute;
+        z-index: 1;
+        top: -100px;
+        left: 0;
+      }
+    </style>
+
