@@ -79,5 +79,35 @@
         let jumpAudio = new Audio("jump.wav");
         
         let platforms = [];
-  
+
+        for (let i = 1; i <= PLATFORM_TOTAL; i++) {
+        platforms[i] = Math.floor(
+          Math.random() * (GAME_WIDTH - PLATFORM_WIDTH)
+        );
+        let el = document.createElement("div");
+        el.className = "platform";
+        el.style.left = platforms[i] + "px";
+        el.style.top = PLATFORM_GAP * i + "px";
+        game.appendChild(el);
+      }
+
+      game.scrollTop = game.scrollHeight;
+      x = platforms[PLATFORM_TOTAL] + 7;
+      y = PLATFORM_TOTAL * PLATFORM_GAP;
+      
+
+      function gameCycle(time) {
+        let timeDiff = time - prevTime;
+        prevTime = time;
+      
+        if (timeDiff > 0 && timeDiff < 160) {
+          x += xSpeed * timeDiff * X_SPEED;
+          y -= ySpeed * timeDiff * Y_SPEED;
+          ySpeed -= timeDiff * GRAVITY; 
+
+          if (x < -DOODLE_WIDTH) {
+            x = GAME_WIDTH;
+          } else if (x > GAME_WIDTH) {
+            x = -DOODLE_WIDTH;
+          }
 
