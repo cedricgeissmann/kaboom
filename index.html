@@ -1,13 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kaboom JS</title>
-  <script type="module" src="script.js"></script>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Doodle Jump</title>
+    <style>
+    body {
+      display: flex;
+      height: 100vh;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+      font: 40px sans-serif;
+    }
+    .game {
+      width: 500px;
+      height: 700px;
+      background: #ccc url(doodle-bg.png);
+      background-attachment: local; 
+      position: relative;
+      overflow: hidden;
+    }
+    .game.gameover {
+        filter: blur(5px);
+      }
+      .platform {
+        width: 114px;
+        height: 29px;
+        background: url(doodle-platform.png);
+        position: absolute;
+        left: 10px;
+        top: 10px;
+      }
+      .doodle {
+        width: 100px;
+        height: 100px;
+        background: url(doodle.png) no-repeat;
+        background-size: 100px 100px;
+        position: absolute;
+        z-index: 1;
+        top: -100px;
+        left: 0;
+      }
+    </style>
+     </head>
+     <body>
+      <div id="app">
+        <div class="game">
+          <div class="doodle"></div>
+        </div>
+      </div>
+      <script>
+        
+        const game = document.querySelector(".game");
+        const doodle = document.querySelector(".doodle");
   
-</body>
+        
+        const GAME_WIDTH = 500;
+        const GAME_HEIGHT = 700;
+        const PLATFORM_WIDTH = 114;
+        const PLATFORM_GAP = 90; 
+        const PLATFORM_TOTAL = 1000; 
+        const DOODLE_WIDTH = 100;
+        const X_SPEED = 0.7;
+        const Y_SPEED = 1.4;
+        const GRAVITY = 0.002;
+  
+        
+        let x = 0;
+        let y = 0;
+        let xSpeed = 0;
+        let ySpeed = 1;
+        let doodleScale = 1;
+        let prevTime = 0;
+        let animFrameId;
+  
+        let jumpAudio = new Audio("jump.wav");
+        
+        let platforms = [];
+
+        for (let i = 1; i <= PLATFORM_TOTAL; i++) {
+        platforms[i] = Math.floor(
+          Math.random() * (GAME_WIDTH - PLATFORM_WIDTH)
+        );
+        let el = document.createElement("div");
+        el.className = "platform";
+        el.style.left = platforms[i] + "px";
+        el.style.top = PLATFORM_GAP * i + "px";
+        game.appendChild(el);
+      }
+
+      game.scrollTop = game.scrollHeight;
+      x = platforms[PLATFORM_TOTAL] + 7;
+      y = PLATFORM_TOTAL * PLATFORM_GAP;
+      
+
+      function gameCycle(time) {
+        let timeDiff = time - prevTime;
+        prevTime = time;
+      
+        if (timeDiff > 0 && timeDiff < 160) {
+          x += xSpeed * timeDiff * X_SPEED;
+          y -= ySpeed * timeDiff * Y_SPEED;
+          ySpeed -= timeDiff * GRAVITY; 
+
+          if (x < -DOODLE_WIDTH) {
+            x = GAME_WIDTH;
+          } else if (x > GAME_WIDTH) {
+            x = -DOODLE_WIDTH;
+          }
+
+          if (ySpeed < 0) {
+            let i = Math.floor(y / PLATFORM_GAP);
+            if (
+              x > platforms[i] - 30 &&
+              x < platforms[i] + 30 + PLATFORM_WIDTH - DOODLE_WIDTH &&
+              i * PLATFORM_GAP < y + 50
+            ) {
+              ySpeed = 1;
+              jumpAudio.play();
+            }
+          }
+
+          if (y > PLATFORM_TOTAL * PLATFORM_GAP) {
+            ySpeed = 1;
+          }
+
+          
+          if (y < game.scrollTop + GAME_HEIGHT / 2) {
+            game.scrollTop = y - GAME_HEIGHT / 2;
+          }
+
+          const rx = Math.round(x);
+          const ry = Math.round(y);
+          doodle.style.transform = `translate(${rx}px, ${ry}px) scaleX(${doodleScale})`;
+        }
+        animFrameId = requestAnimationFrame(gameCycle);
+      }
+
+      function keyDown(event) {
+        if (event.key == "ArrowLeft") {
+          doodleScale = xSpeed = -1;
+        } else if (event.key == "ArrowRight") {
+          doodleScale = xSpeed = 1;
+        } else if (event.key == "Escape") {
+          cancelAnimationFrame(animFrameId); 
+        }
+        
+      }
+      function keyUp() {
+        if (
+          (event.key == "ArrowLeft" && xSpeed < 0) ||
+          (event.key == "ArrowRight" && xSpeed > 0)
+        ) {
+          xSpeed = 0;
+        }
+      }
+
+      window.addEventListener("keydown", keyDown);
+      window.addEventListener("keyup", keyUp);
+
+      requestAnimationFrame(gameCycle);
+    </script>
+  </body>
 </html>
+
+
