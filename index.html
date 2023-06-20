@@ -45,4 +45,39 @@
       }
     </style>
      </head>
+     <body>
+      <div id="app">
+        <div class="game">
+          <div class="doodle"></div>
+        </div>
+      </div>
+      <script>
+        
+        const game = document.querySelector(".game");
+        const doodle = document.querySelector(".doodle");
+  
+        
+        const GAME_WIDTH = 500;
+        const GAME_HEIGHT = 700;
+        const PLATFORM_WIDTH = 114;
+        const PLATFORM_GAP = 90; 
+        const PLATFORM_TOTAL = 1000; 
+        const DOODLE_WIDTH = 100;
+        const X_SPEED = 0.7;
+        const Y_SPEED = 1.4;
+        const GRAVITY = 0.002;
+  
+        
+        let x = 0;
+        let y = 0;
+        let xSpeed = 0;
+        let ySpeed = 1;
+        let doodleScale = 1;
+        let prevTime = 0;
+        let animFrameId;
+  
+        let jumpAudio = new Audio("jump.wav");
+        
+        let platforms = [];
+  
 
