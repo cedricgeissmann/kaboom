@@ -149,6 +149,21 @@
         }
         
       }
-      
+      function keyUp() {
+        if (
+          (event.key == "ArrowLeft" && xSpeed < 0) ||
+          (event.key == "ArrowRight" && xSpeed > 0)
+        ) {
+          xSpeed = 0;
+        }
+      }
+
+      window.addEventListener("keydown", keyDown);
+      window.addEventListener("keyup", keyUp);
+
+      requestAnimationFrame(gameCycle);
+    </script>
+  </body>
+</html>
 
 
